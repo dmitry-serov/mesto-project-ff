@@ -5,6 +5,7 @@ export function createCardElement(card, cardTemplate, onDelete) {
     const deleteButton = cardElement.querySelector('.card__delete-button');
     cardElement.querySelector('.card__title').textContent = card.name;
     cardElement.querySelector('.card__image').src = card.link;
+    cardElement.querySelector('.card__image').alt = card.name;
     deleteButton.addEventListener('click', () => onDelete(cardElement));
     return cardElement;
 }
