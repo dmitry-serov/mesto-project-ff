@@ -1,5 +1,3 @@
-//index.js
-
 import '../pages/index.css';
 import { initialCards } from './cards.js';
 import { createCardElement, deleteCardElement, onClickLike } from './card.js';
@@ -24,56 +22,52 @@ initialCards.forEach((cardData) => {
     cardsList.append(cardElement);
 });
 
-// Обработчики открытия
+// Обработчики для открытия модальных окон
 profileAddButton.addEventListener('click', () => openModal(modalTypeNewCard));
 profileEditButton.addEventListener('click', () => {
-    openModal(modalTypeEditProfile);
+    openModal(modalTypeEditProfile); // открываем окно
+    // поля формы
     const name = modalTypeEditProfile.querySelector('.popup__input_type_name');
     const description = modalTypeEditProfile.querySelector('.popup__input_type_description');
+    // заполняем поля формы
     name.value = profileTitle.textContent;
     description.value = profileDescription.textContent;
 });
 
-// функция для обработчика форм
+// функция для обработчика отправки форм
 function handleFormSubmit(evt) {
     evt.preventDefault(); // отменяем стандартную отправку формы
     const form = evt.target; // элемент формы
-    const formName = form.getAttribute('name'); // имя формы
-
+    const formName = form.getAttribute('name'); // имя этой формы
     // если это форма редактирования профиля
     if (formName === 'edit-profile') {
-        // значения полей
+        // инпуты формы
         const nameInput = form.elements['name'].value;
         const jobInput = form.elements['description'].value;
-        // вставляем значения полей
+        // сохраняем изменения значений
         profileTitle.textContent = nameInput;
         profileDescription.textContent = jobInput;
     }
-
     // если это форма добавления карточки
     if (formName === 'new-place') {
-        // значения полей
+        // значения инпутов
         let placeName = form.elements['place-name'].value;
         let link = form.elements['link'].value;
-        // cоздаем объект с данными карточки
+        // cоздаем объект со значениями инпутов
         const newCardData = {
             name: placeName,
             link: link
         };
         const newCard = createCardElement(newCardData, cardTemplate, deleteCardElement, onClickLike, onClickImage); // создаем элемент карточки из шаблона
         cardsList.prepend(newCard); // добавляем новую карточку
-        // очищаем инпуты
-        form.elements['place-name'].value = '';
-        form.elements['link'].value = '';
+        form.reset(); // очищаем инпуты
     }
-
     closeModal(evt.target.closest('.popup')); // закрываем форму
 }
 
-// добавляем обработчики форм
+// добавляем обработчики отправки форм
 formEditProfile.addEventListener('submit', handleFormSubmit);
 formNewCard.addEventListener('submit', handleFormSubmit);
-
 
 // функция для обработки клика по изображению в карточке
 function onClickImage(evt) {
