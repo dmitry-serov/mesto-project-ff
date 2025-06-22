@@ -30,7 +30,13 @@ const onClickImage = evt => {
 
 // Создание начальных карточек
 initialCards.forEach((cardData) => {
-    const cardElement = createCardElement(cardData, cardTemplate, deleteCardElement, onClickLike, onClickImage);
+    const cardElement = createCardElement({
+        card: cardData,
+        cardTemplate: cardTemplate,
+        onDelete: deleteCardElement,
+        onClickLike: onClickLike,
+        onClickImage: onClickImage
+    });
     cardsList.append(cardElement);
 });
 
@@ -67,7 +73,14 @@ const handleFormSubmit = evt => {
             name: placeName,
             link: link
         };
-        const newCard = createCardElement(newCardData, cardTemplate, deleteCardElement, onClickLike, onClickImage); // создаем элемент карточки из шаблона
+        // создаем элемент карточки из шаблона
+        const newCard = createCardElement({
+            card: newCardData,
+            cardTemplate: cardTemplate,
+            onDelete: deleteCardElement,
+            onClickLike: onClickLike,
+            onClickImage: onClickImage
+        });
         cardsList.prepend(newCard); // добавляем новую карточку
         form.reset(); // очищаем инпуты
     }
