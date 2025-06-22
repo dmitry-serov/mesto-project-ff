@@ -16,6 +16,8 @@ const popupImage = modalTypeImage.querySelector('.popup__image'); // изобр�
 const popupCaption = modalTypeImage.querySelector('.popup__caption'); // подпись в попапе с фото
 
 const formEditProfile = document.forms['edit-profile']; // форма для редактирования профиля
+const nameInput = formEditProfile.elements['name']; // инпут имени в этой форме
+const jobInput = formEditProfile.elements['description']; // инпут описания в этой форме
 const formNewCard = document.forms['new-place']; // форма для добавления карточки
 
 // Создание начальных карточек
@@ -28,12 +30,9 @@ initialCards.forEach((cardData) => {
 profileAddButton.addEventListener('click', () => openModal(modalTypeNewCard));
 profileEditButton.addEventListener('click', () => {
     openModal(modalTypeEditProfile); // открываем окно
-    // поля формы
-    const name = modalTypeEditProfile.querySelector('.popup__input_type_name');
-    const description = modalTypeEditProfile.querySelector('.popup__input_type_description');
     // заполняем поля формы
-    name.value = profileTitle.textContent;
-    description.value = profileDescription.textContent;
+    nameInput.value = profileTitle.textContent;
+    jobInput.value = profileDescription.textContent;
 });
 
 // функция для обработчика отправки форм
@@ -75,6 +74,6 @@ formNewCard.addEventListener('submit', handleFormSubmit);
 function onClickImage(evt) {
     openModal(modalTypeImage);
     popupImage.src = evt.target.src;
-    popupImage.alt = evt.target.alt;
+    popupImage.alt = `Фотография места: ${evt.target.alt}`;
     popupCaption.textContent = evt.target.alt;
 }
