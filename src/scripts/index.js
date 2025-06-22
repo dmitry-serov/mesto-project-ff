@@ -12,6 +12,8 @@ const profileEditButton = document.querySelector('.profile__edit-button'); // к
 const modalTypeNewCard = document.querySelector('.popup_type_new-card'); // попап для добавления карточки
 const modalTypeEditProfile = document.querySelector('.popup_type_edit'); // попап для редактирования профиля
 const modalTypeImage = document.querySelector('.popup_type_image'); // попап с фото из карточки
+const popupImage = modalTypeImage.querySelector('.popup__image'); // изображение в попапе с фото
+const popupCaption = modalTypeImage.querySelector('.popup__caption'); // подпись в попапе с фото
 
 const formEditProfile = document.forms['edit-profile']; // форма для редактирования профиля
 const formNewCard = document.forms['new-place']; // форма для добавления карточки
@@ -72,6 +74,7 @@ formNewCard.addEventListener('submit', handleFormSubmit);
 // функция для обработки клика по изображению в карточке
 function onClickImage(evt) {
     openModal(modalTypeImage);
-    modalTypeImage.querySelector('.popup__image').src = evt.target.src;
-    modalTypeImage.querySelector('.popup__caption').textContent = evt.target.alt;
+    popupImage.src = evt.target.src;
+    popupImage.alt = evt.target.alt;
+    popupCaption.textContent = evt.target.alt;
 }
