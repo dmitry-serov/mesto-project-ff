@@ -1,5 +1,5 @@
 // создание карточки
-export function createCardElement(card, cardTemplate, onDelete, onClickLike, onClickImage) {
+export const createCardElement = (card, cardTemplate, onDelete, onClickLike, onClickImage) => {
     const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true); // создаем карточку из шаблона
     const deleteButton = cardElement.querySelector('.card__delete-button'); // кнопка удаления карточки
     const cardImage = cardElement.querySelector('.card__image'); // изображение на карточке
@@ -19,14 +19,14 @@ export function createCardElement(card, cardTemplate, onDelete, onClickLike, onC
 }
 
 // удаление карточки
-export function deleteCardElement(cardElement) {
+export const deleteCardElement = cardElement => {
     cardElement.remove();
 }
 
 // функция для добавления обработчика лайка
-export function onClickLike (cardElement) {
+export const onClickLike = cardElement => {
     const likeButton = cardElement.querySelector('.card__like-button');
-    likeButton.addEventListener('click', evt =>{
+    likeButton.addEventListener('click', evt => {
     evt.target.classList.toggle('card__like-button_is-active');
     });
 }

@@ -1,5 +1,5 @@
 // открытие модального окна
-export function openModal(modalElement) {
+export const openModal = modalElement => {
     modalElement.classList.add('popup_is-opened'); // добавляем класс для открытия
     // добавляем обработчики
     modalElement.addEventListener('click', onClickOutside);
@@ -8,7 +8,7 @@ export function openModal(modalElement) {
 }
 
 // закрытие модального окна
-export function closeModal(modalElement) {
+export const closeModal = modalElement => {
     modalElement.classList.remove('popup_is-opened');
     // снимаем обработчики
     modalElement.removeEventListener('click', onClickOutside);
@@ -18,14 +18,14 @@ export function closeModal(modalElement) {
 }
 
 // обработчик клика по оверлею
-function onClickOutside(evt) {
+const onClickOutside = evt => {
     if (evt.target === evt.currentTarget) {
         closeModal(evt.currentTarget);
     }
 }
 
 // обработчик нажатия Esc
-function onEscape(evt) {
+const onEscape = evt => {
     if (evt.key === 'Escape') {
         const openedPopup = document.querySelector('.popup_is-opened');
         // проверяем, чтобы работало только при открытом окне
@@ -36,7 +36,7 @@ function onEscape(evt) {
 }
 
 // обработчик клика по крестику
-function onClickCloseButton(evt) {
+const onClickCloseButton = evt => {
     const openedPopup = evt.target.closest('.popup');
     closeModal(openedPopup);
 }

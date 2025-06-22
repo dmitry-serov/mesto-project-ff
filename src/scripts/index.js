@@ -20,6 +20,14 @@ const nameInput = formEditProfile.elements['name']; // инпут имени в 
 const jobInput = formEditProfile.elements['description']; // инпут описания в этой форме
 const formNewCard = document.forms['new-place']; // форма для добавления карточки
 
+// функция для обработки клика по изображению в карточке
+const onClickImage = evt => {
+    openModal(modalTypeImage);
+    popupImage.src = evt.target.src;
+    popupImage.alt = `Фотография места: ${evt.target.alt}`;
+    popupCaption.textContent = evt.target.alt;
+}
+
 // Создание начальных карточек
 initialCards.forEach((cardData) => {
     const cardElement = createCardElement(cardData, cardTemplate, deleteCardElement, onClickLike, onClickImage);
@@ -36,7 +44,7 @@ profileEditButton.addEventListener('click', () => {
 });
 
 // функция для обработчика отправки форм
-function handleFormSubmit(evt) {
+const handleFormSubmit = evt => {
     evt.preventDefault(); // отменяем стандартную отправку формы
     const form = evt.target; // элемент формы
     const formName = form.getAttribute('name'); // имя этой формы
@@ -69,11 +77,3 @@ function handleFormSubmit(evt) {
 // добавляем обработчики отправки форм
 formEditProfile.addEventListener('submit', handleFormSubmit);
 formNewCard.addEventListener('submit', handleFormSubmit);
-
-// функция для обработки клика по изображению в карточке
-function onClickImage(evt) {
-    openModal(modalTypeImage);
-    popupImage.src = evt.target.src;
-    popupImage.alt = `Фотография места: ${evt.target.alt}`;
-    popupCaption.textContent = evt.target.alt;
-}
