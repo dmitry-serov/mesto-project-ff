@@ -19,6 +19,8 @@ const formEditProfile = document.forms['edit-profile']; // форма для р�
 const nameInput = formEditProfile.elements['name']; // инпут имени в этой форме
 const jobInput = formEditProfile.elements['description']; // инпут описания в этой форме
 const formNewCard = document.forms['new-place']; // форма для добавления карточки
+const placeName = formNewCard.elements['place-name']; // инпут места в этой форме
+const link = formNewCard.elements['link']; // инпут ссылки на фото в этой форме
 
 // функция для обработки клика по изображению в карточке
 const onClickImage = evt => {
@@ -49,44 +51,35 @@ profileEditButton.addEventListener('click', () => {
     jobInput.value = profileDescription.textContent;
 });
 
-// функция для обработчика отправки форм
-const handleFormSubmit = evt => {
+// обработка сабмита для формы редактирования профиля
+const handleEditProfileSubmit = evt => {
     evt.preventDefault(); // отменяем стандартную отправку формы
-    const form = evt.target; // элемент формы
-    const formName = form.getAttribute('name'); // имя этой формы
-    // если это форма редактирования профиля
-    if (formName === 'edit-profile') {
-        // инпуты формы
-        const nameInput = form.elements['name'].value;
-        const jobInput = form.elements['description'].value;
-        // сохраняем изменения значений
-        profileTitle.textContent = nameInput;
-        profileDescription.textContent = jobInput;
-    }
-    // если это форма добавления карточки
-    if (formName === 'new-place') {
-        // значения инпутов
-        let placeName = form.elements['place-name'].value;
-        let link = form.elements['link'].value;
-        // cоздаем объект со значениями инпутов
-        const newCardData = {
-            name: placeName,
-            link: link
-        };
-        // создаем элемент карточки из шаблона
-        const newCard = createCardElement({
-            card: newCardData,
-            cardTemplate: cardTemplate,
-            onDelete: deleteCardElement,
-            onClickLike: onClickLike,
-            onClickImage: onClickImage
-        });
-        cardsList.prepend(newCard); // добавляем новую карточку
-        form.reset(); // очищаем инпуты
-    }
+    profileTitle.textContent = nameInput.value;
+    profileDescription.textContent = jobInput.value;
+    closeModal(evt.target.closest('.popup')); // закрываем форму
+}
+
+// обработка сабмита для формы новой карточки
+const handleNewCardSubmit = evt => {
+    evt.preventDefault(); // отменяем стандартную отправку формы
+    // cоздаем объект со значениями инпутов
+    const newCardData = {
+        name: placeName.value,
+        link: link.value
+    };
+    // создаем элемент карточки из шаблона
+    const newCard = createCardElement({
+        card: newCardData,
+        cardTemplate: cardTemplate,
+        onDelete: deleteCardElement,
+        onClickLike: onClickLike,
+        onClickImage: onClickImage
+    });
+    cardsList.prepend(newCard); // добавляем новую карточку
+    evt.target.reset(); // очищаем инпуты
     closeModal(evt.target.closest('.popup')); // закрываем форму
 }
 
 // добавляем обработчики отправки форм
-formEditProfile.addEventListener('submit', handleFormSubmit);
-formNewCard.addEventListener('submit', handleFormSubmit);
+formEditProfile.addEventListener('submit', handleEditProfileSubmit);
+formNewCard.addEventListener('submit', handleNewCardSubmit);
