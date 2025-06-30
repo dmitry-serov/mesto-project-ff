@@ -2,6 +2,7 @@ import '../pages/index.css';
 import { initialCards } from './cards.js';
 import { createCardElement, deleteCardElement, onClickLike } from './card.js';
 import { openModal, closeModal } from './modal.js';
+import { enableValidation, clearValidation } from './validation.js';
 
 const cardsList = document.querySelector('.places__list'); // место для карточек
 const cardTemplate = document.querySelector('#card-template').content; // шаблон карточки
@@ -83,3 +84,14 @@ const handleNewCardSubmit = evt => {
 // добавляем обработчики отправки форм
 formEditProfile.addEventListener('submit', handleEditProfileSubmit);
 formNewCard.addEventListener('submit', handleNewCardSubmit);
+
+const validationConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_inactive',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__input-error_active'
+};
+
+enableValidation(validationConfig); // включаем валидацию форм
