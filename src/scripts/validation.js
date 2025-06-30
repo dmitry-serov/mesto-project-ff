@@ -19,6 +19,12 @@ const hideInputError = (formElement, inputElement, config) => {
 
 // функция для проверки валидности инпута
 const checkInputValidity = (formElement, inputElement, config) => {
+    if (inputElement.validity.patternMismatch) { // проверяем кастомная ошибка или стандартная
+    inputElement.setCustomValidity(inputElement.dataset.errorMessage); // если да берем кастомное сообщение
+  } else {
+    inputElement.setCustomValidity(""); // иначе стандартное
+  }
+
   if (!inputElement.validity.valid) { // если инпут невалидный
     showInputError(formElement, inputElement, inputElement.validationMessage, config); // показываем ошибку
   } else {
@@ -44,9 +50,8 @@ const toggleButtonState = (inputList, buttonElement, config) => {
 
 // функция для добавления обработчика ошибок на все инпуты формы
 const setEventListeners = (formElement, config) => {
-  const inputList = Array.from(formElement.querySelectorAll(config.inputSelector)); // получаем все инпуты
+  const inputList = Array.from(formElement.querySelectorAll(config.inputSelector)); // получаем все инпуты формы
   const buttonElement = formElement.querySelector(config.submitButtonSelector); // получаем кнопку submit
-  toggleButtonState(inputList, buttonElement, config); // проверяем корректность состояния submit
   inputList.forEach((inputElement) => {
     inputElement.addEventListener('input', () => { // на каждый инпут вешаем обработчик
       checkInputValidity(formElement, inputElement, config); // проверяет валидность инпута
@@ -64,13 +69,10 @@ export const enableValidation = (config) => {
 
 export const clearValidation = (formElement, config) => {
   const inputList = Array.from(formElement.querySelectorAll(config.inputSelector));
-  const buttonElement = formElement.querySelector(config.submitButtonSelector);
-  
+  const buttonElement = formElement.querySelector(config.submitButtonSelector);  
   // Очищаем ошибки для всех инпутов
   inputList.forEach((inputElement) => {
     hideInputError(formElement, inputElement, config);
   });
-  
-  // Сбрасываем состояние кнопки
-  toggleButtonState(inputList, buttonElement, config);
+  buttonElement.classList.add(config.inactiveButtonClass);
 };

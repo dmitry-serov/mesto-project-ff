@@ -43,10 +43,26 @@ initialCards.forEach((cardData) => {
     cardsList.append(cardElement);
 });
 
+// объект конфигурации для валидации форм
+const validationConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_inactive',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__input-error_active'
+};
+
+enableValidation(validationConfig); // включаем валидацию форм
+
 // Обработчики для открытия модальных окон
-profileAddButton.addEventListener('click', () => openModal(modalTypeNewCard));
+profileAddButton.addEventListener('click', () => {
+    openModal(modalTypeNewCard);
+    clearValidation(modalTypeNewCard, validationConfig);
+});
 profileEditButton.addEventListener('click', () => {
     openModal(modalTypeEditProfile); // открываем окно
+    clearValidation(modalTypeEditProfile, validationConfig);
     // заполняем поля формы
     nameInput.value = profileTitle.textContent;
     jobInput.value = profileDescription.textContent;
@@ -84,14 +100,3 @@ const handleNewCardSubmit = evt => {
 // добавляем обработчики отправки форм
 formEditProfile.addEventListener('submit', handleEditProfileSubmit);
 formNewCard.addEventListener('submit', handleNewCardSubmit);
-
-const validationConfig = {
-  formSelector: '.popup__form',
-  inputSelector: '.popup__input',
-  submitButtonSelector: '.popup__button',
-  inactiveButtonClass: 'popup__button_inactive',
-  inputErrorClass: 'popup__input_type_error',
-  errorClass: 'popup__input-error_active'
-};
-
-enableValidation(validationConfig); // включаем валидацию форм
