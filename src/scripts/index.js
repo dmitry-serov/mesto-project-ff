@@ -1,8 +1,8 @@
 import '../pages/index.css';
-import { initialCards } from './cards.js';
 import { createCardElement, deleteCardElement, onClickLike } from './card.js';
 import { openModal, closeModal } from './modal.js';
 import { enableValidation, clearValidation } from './validation.js';
+import { getInitialCards, getUserInfo } from './api.js';
 
 const cardsList = document.querySelector('.places__list'); // место для карточек
 const cardTemplate = document.querySelector('#card-template').content; // шаблон карточки
@@ -23,6 +23,7 @@ const formNewCard = document.forms['new-place']; // форма для добав
 const placeName = formNewCard.elements['place-name']; // инпут места в этой форме
 const link = formNewCard.elements['link']; // инпут ссылки на фото в этой форме
 
+
 // функция для обработки клика по изображению в карточке
 const onClickImage = evt => {
     openModal(modalTypeImage);
@@ -32,16 +33,24 @@ const onClickImage = evt => {
 }
 
 // Создание начальных карточек
-initialCards.forEach((cardData) => {
-    const cardElement = createCardElement({
-        card: cardData,
-        cardTemplate: cardTemplate,
-        onDelete: deleteCardElement,
-        onClickLike: onClickLike,
-        onClickImage: onClickImage
+getInitialCards()
+    .then(cards => {
+        cards.forEach(card => {
+            const cardElement = createCardElement({
+                card: card,
+                cardTemplate: cardTemplate,
+                onDelete: deleteCardElement,
+                onClickLike: onClickLike,
+                onClickImage: onClickImage
+            });
+            cardsList.append(cardElement);
+        });
+    })
+    .catch((err) => {
+        console.log(err); // выводим ошибку в консоль
     });
-    cardsList.append(cardElement);
-});
+
+getUserInfo();
 
 // объект конфигурации для валидации форм
 const validationConfig = {
