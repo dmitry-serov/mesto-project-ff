@@ -33,3 +33,14 @@ export const getUserInfo = () => {
       return Promise.reject(`Ошибка: ${res.status}`);
     })
 };
+
+export const updateUserInfo = (newName, newAbout) => {
+  return fetch(`${config.baseUrl}/users/me`, {
+    method: 'PATCH',
+    headers: config.headers,
+    body: JSON.stringify({
+      name: newName,
+      about: newAbout
+      })
+    }); 
+}

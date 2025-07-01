@@ -2,13 +2,14 @@ import '../pages/index.css';
 import { createCardElement, deleteCardElement, onClickLike } from './card.js';
 import { openModal, closeModal } from './modal.js';
 import { enableValidation, clearValidation } from './validation.js';
-import { getInitialCards, getUserInfo } from './api.js';
+import { getInitialCards, getUserInfo, updateUserInfo } from './api.js';
 
 const cardsList = document.querySelector('.places__list'); // место для карточек
 const cardTemplate = document.querySelector('#card-template').content; // шаблон карточки
 const profileAddButton = document.querySelector('.profile__add-button'); // кнопка для добавления карточки
 const profileTitle = document.querySelector('.profile__title'); // имя в профиле
 const profileDescription = document.querySelector('.profile__description'); // описание в профиле
+const profileImage = document.querySelector('.profile__image'); // фото в профиле
 const profileEditButton = document.querySelector('.profile__edit-button'); // кнопка для редактирования профиля
 const modalTypeNewCard = document.querySelector('.popup_type_new-card'); // попап для добавления карточки
 const modalTypeEditProfile = document.querySelector('.popup_type_edit'); // попап для редактирования профиля
@@ -32,9 +33,15 @@ const onClickImage = evt => {
     popupCaption.textContent = evt.target.alt;
 }
 
-// Создание начальных карточек
-getInitialCards()
-    .then(cards => {
+// загружаем данные пользователя и карточки одновременно
+Promise.all([getUserInfo(), getInitialCards()])
+    .then(([user, cards]) => {
+        // обновляем профиль пользователя
+        profileTitle.textContent = user.name;
+        profileDescription.textContent = user.about;
+        profileImage.style.backgroundImage = `url('${user.avatar}')`;
+        
+        // создаем карточки
         cards.forEach(card => {
             const cardElement = createCardElement({
                 card: card,
@@ -49,8 +56,6 @@ getInitialCards()
     .catch((err) => {
         console.log(err); // выводим ошибку в консоль
     });
-
-getUserInfo();
 
 // объект конфигурации для валидации форм
 const validationConfig = {
@@ -80,8 +85,11 @@ profileEditButton.addEventListener('click', () => {
 // обработка сабмита для формы редактирования профиля
 const handleEditProfileSubmit = evt => {
     evt.preventDefault(); // отменяем стандартную отправку формы
-    profileTitle.textContent = nameInput.value;
-    profileDescription.textContent = jobInput.value;
+    // profileTitle.textContent = nameInput.value;
+    // profileDescription.textContent = jobInput.value;
+
+    updateUserInfo(nameInput.value, jobInput.value);
+
     closeModal(evt.target.closest('.popup')); // закрываем форму
 }
 
