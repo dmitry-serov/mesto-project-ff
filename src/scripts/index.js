@@ -2,7 +2,7 @@ import '../pages/index.css';
 import { createCardElement, deleteCardElement, onClickLike } from './card.js';
 import { openModal, closeModal } from './modal.js';
 import { enableValidation, clearValidation } from './validation.js';
-import { getInitialCards, getUserInfo, updateUserInfo } from './api.js';
+import { getInitialCards, getUserInfo, updateUserInfo, addCard } from './api.js';
 
 const cardsList = document.querySelector('.places__list'); // место для карточек
 const cardTemplate = document.querySelector('#card-template').content; // шаблон карточки
@@ -53,9 +53,8 @@ Promise.all([getUserInfo(), getInitialCards()])
             cardsList.append(cardElement);
         });
     })
-    .catch((err) => {
-        console.log(err); // выводим ошибку в консоль
-    });
+    .catch(error => console.error(error)); // выводим ошибку в консоль
+
 
 // объект конфигурации для валидации форм
 const validationConfig = {
@@ -85,10 +84,13 @@ profileEditButton.addEventListener('click', () => {
 // обработка сабмита для формы редактирования профиля
 const handleEditProfileSubmit = evt => {
     evt.preventDefault(); // отменяем стандартную отправку формы
-    // profileTitle.textContent = nameInput.value;
-    // profileDescription.textContent = jobInput.value;
 
-    updateUserInfo(nameInput.value, jobInput.value);
+    updateUserInfo(nameInput.value, jobInput.value)
+        .then(user => {
+            profileTitle.textContent = user.name;
+            profileDescription.textContent = user.about;
+        })
+        .catch(error => console.error(error));
 
     closeModal(evt.target.closest('.popup')); // закрываем форму
 }
@@ -101,17 +103,23 @@ const handleNewCardSubmit = evt => {
         name: placeName.value,
         link: link.value
     };
-    // создаем элемент карточки из шаблона
-    const newCard = createCardElement({
-        card: newCardData,
-        cardTemplate: cardTemplate,
-        onDelete: deleteCardElement,
-        onClickLike: onClickLike,
-        onClickImage: onClickImage
-    });
-    cardsList.prepend(newCard); // добавляем новую карточку
-    evt.target.reset(); // очищаем инпуты
-    closeModal(evt.target.closest('.popup')); // закрываем форму
+
+    addCard(newCardData)
+        .then(newCard => {
+            // создаем элемент карточки из шаблона
+            const newCardElement = createCardElement({
+                card: newCard,
+                cardTemplate: cardTemplate,
+                onDelete: deleteCardElement,
+                onClickLike: onClickLike,
+                onClickImage: onClickImage
+            });
+            cardsList.prepend(newCardElement); // добавляем новую карточку
+            evt.target.reset(); // очищаем инпуты
+            closeModal(evt.target.closest('.popup')); // закрываем форму
+        })
+        .catch(error => console.error('Ошибка при добавлении карточки:', error));
+
 }
 
 // добавляем обработчики отправки форм

@@ -42,5 +42,27 @@ export const updateUserInfo = (newName, newAbout) => {
       name: newName,
       about: newAbout
       })
-    }); 
-}
+    })
+      .then(res => {
+        if (res.ok) {
+        return res.json();
+      }
+
+      // если ошибка, отклоняем промис
+      return Promise.reject(`Ошибка: ${res.status}`);
+    })
+};
+
+export const addCard = (cardData) => {
+    return fetch(`${config.baseUrl}/cards`, {
+        method: 'POST',
+        headers: config.headers,
+        body: JSON.stringify(cardData)
+    })
+    .then(res => {
+        if (res.ok) {
+            return res.json();
+        }
+        return Promise.reject(`Ошибка: ${res.status}`);
+    });
+};
