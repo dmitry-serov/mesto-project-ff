@@ -5,11 +5,13 @@ export const createCardElement = ({card, cardTemplate, onDelete, onClickLike, on
     const cardImage = cardElement.querySelector('.card__image'); // изображение на карточке
     const cardTitle = cardElement.querySelector('.card__title'); // название карточки
     const likeButton = cardElement.querySelector('.card__like-button'); // иконка лайка
+    const likeCount = cardElement.querySelector('.card__like-count'); // счетчик лайков
     
     // наполняем карточку
     cardTitle.textContent = card.name;
     cardImage.src = card.link;
     cardImage.alt = card.name;
+    likeCount.textContent = card.likes.length;
 
     // добавляем обработчики
     deleteButton.addEventListener('click', () => onDelete(cardElement));
