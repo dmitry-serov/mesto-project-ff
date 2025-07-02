@@ -13,6 +13,7 @@ const profileImage = document.querySelector('.profile__image'); // фото в �
 const profileEditButton = document.querySelector('.profile__edit-button'); // кнопка для редактирования профиля
 const modalTypeNewCard = document.querySelector('.popup_type_new-card'); // попап для добавления карточки
 const modalTypeEditProfile = document.querySelector('.popup_type_edit'); // попап для редактирования профиля
+const modalTypeDeleteCard = document.querySelector('.popup_type_delete-card'); // попап для удаления карточки
 const modalTypeImage = document.querySelector('.popup_type_image'); // попап с фото из карточки
 const popupImage = modalTypeImage.querySelector('.popup__image'); // изображение в попапе с фото
 const popupCaption = modalTypeImage.querySelector('.popup__caption'); // подпись в попапе с фото
@@ -33,6 +34,19 @@ const onClickImage = evt => {
     popupCaption.textContent = evt.target.alt;
 }
 
+const onClickDelete = cardElement => {
+    openModal(modalTypeDeleteCard);
+
+    // Вешаем обработчик только на время открытия попапа
+    const confirmDeleteButton = modalTypeDeleteCard.querySelector('.popup__button');
+    const onConfirm = () => {
+        deleteCardElement(cardElement);
+        closeModal(modalTypeDeleteCard);
+        confirmDeleteButton.removeEventListener('click', onConfirm);
+    }
+    confirmDeleteButton.addEventListener('click', onConfirm);
+}
+
 // загружаем данные пользователя и карточки одновременно
 Promise.all([getUserInfo(), getInitialCards()])
     .then(([user, cards]) => {
@@ -46,9 +60,10 @@ Promise.all([getUserInfo(), getInitialCards()])
             const cardElement = createCardElement({
                 card: card,
                 cardTemplate: cardTemplate,
-                onDelete: deleteCardElement,
+                onDelete: onClickDelete,
                 onClickLike: onClickLike,
-                onClickImage: onClickImage
+                onClickImage: onClickImage,
+                isOwnCard: user._id === card.owner._id
             });
             cardsList.append(cardElement);
         });
@@ -110,7 +125,7 @@ const handleNewCardSubmit = evt => {
             const newCardElement = createCardElement({
                 card: newCard,
                 cardTemplate: cardTemplate,
-                onDelete: deleteCardElement,
+                onDelete: onClickDelete,
                 onClickLike: onClickLike,
                 onClickImage: onClickImage
             });
