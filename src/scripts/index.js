@@ -2,7 +2,7 @@ import '../pages/index.css';
 import { createCardElement, deleteCardElement, onClickLike } from './card.js';
 import { openModal, closeModal } from './modal.js';
 import { enableValidation, clearValidation } from './validation.js';
-import { getInitialCards, getUserInfo, updateUserInfo, addCard, deleteCard } from './api.js';
+import { getInitialCards, getUserInfo, updateUserInfo, addCard, deleteCard, addLike, deleteLike } from './api.js';
 
 const cardsList = document.querySelector('.places__list'); // место для карточек
 const cardTemplate = document.querySelector('#card-template').content; // шаблон карточки
@@ -28,6 +28,7 @@ const formDeleteCard = document.forms['delete-confirm']; // форма для у
 
 // переменная для хранения ссылки на карточку и её ID для удаления
 let cardToDelete = null;
+let currentUserId = null; // добавлено для хранения id пользователя
 
 // функция для обработки клика по изображению в карточке
 const onClickImage = evt => {
@@ -63,6 +64,24 @@ const onClickDelete = (cardElement, cardId) => {
     openModal(modalTypeDeleteCard);
 }
 
+// обработчик лайка
+const handleLikeClick = (evt, cardId) => {
+    const likeButton = evt.target;
+    if (likeButton.classList.contains('card__like-button_is-active')) {
+        deleteLike(cardId)
+            .then(() => {
+                likeButton.classList.remove('card__like-button_is-active');
+            })
+            .catch(console.error);
+    } else {
+        addLike(cardId)
+            .then(() => {
+                likeButton.classList.add('card__like-button_is-active');
+            })
+            .catch(console.error);
+    }
+};
+
 // загружаем данные пользователя и карточки одновременно
 Promise.all([getUserInfo(), getInitialCards()])
     .then(([user, cards]) => {
@@ -70,16 +89,18 @@ Promise.all([getUserInfo(), getInitialCards()])
         profileTitle.textContent = user.name;
         profileDescription.textContent = user.about;
         profileImage.style.backgroundImage = `url('${user.avatar}')`;
+        currentUserId = user._id; // сохраняем id пользователя
         
         // создаем карточки
         cards.forEach(card => {
             const cardElement = createCardElement({
                 card: card,
                 cardTemplate: cardTemplate,
-                onClickDelete: (element) => onClickDelete(element, card._id), // передаем ID как параметр
-                onClickLike: onClickLike,
+                onClickDelete: (element, id) => onClickDelete(element, id),
+                onClickLike: handleLikeClick,
                 onClickImage: onClickImage,
-                isOwnCard: user._id === card.owner._id
+                isOwnCard: user._id === card.owner._id,
+                currentUserId: currentUserId // передаем id пользователя
             });
             
             cardsList.append(cardElement);
@@ -141,10 +162,11 @@ const handleNewCardSubmit = evt => {
             const newCardElement = createCardElement({
                 card: newCard,
                 cardTemplate: cardTemplate,
-                onClickDelete: (element) => onClickDelete(element, newCard._id), // передаем ID как параметр
-                onClickLike: onClickLike,
+                onClickDelete: (element, id) => onClickDelete(element, id),
+                onClickLike: handleLikeClick,
                 onClickImage: onClickImage,
-                isOwnCard: true
+                isOwnCard: true,
+                currentUserId: currentUserId // передаем id пользователя
             });
             
             cardsList.prepend(newCardElement); // добавляем новую карточку

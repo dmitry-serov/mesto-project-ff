@@ -53,6 +53,7 @@ export const updateUserInfo = (newName, newAbout) => {
     })
 };
 
+// функция для добавления карточки
 export const addCard = (cardData) => {
     return fetch(`${config.baseUrl}/cards`, {
         method: 'POST',
@@ -70,6 +71,34 @@ export const addCard = (cardData) => {
 // функция для удаления карточки
 export const deleteCard = (cardId) => {
     return fetch(`${config.baseUrl}/cards/${cardId}`, {
+        method: 'DELETE',
+        headers: config.headers
+    })
+    .then(res => {
+        if (res.ok) {
+            return res.json();
+        }
+        return Promise.reject(`Ошибка: ${res.status}`);
+    });
+};
+
+// функция для добавления лайка
+export const addLike = (cardId) => {
+    return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
+        method: 'PUT',
+        headers: config.headers
+    })
+    .then(res => {
+        if (res.ok) {
+            return res.json();
+        }
+        return Promise.reject(`Ошибка: ${res.status}`);
+    });
+};
+
+// функция для удаления лайка
+export const deleteLike = (cardId) => {
+    return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
         method: 'DELETE',
         headers: config.headers
     })

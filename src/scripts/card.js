@@ -1,5 +1,9 @@
 // создание карточки
-export const createCardElement = ({card, cardTemplate, onClickDelete, onClickLike, onClickImage, isOwnCard}) => {
+const isLiked = (card, currentUserId) => {
+    return card.likes.some(like => like._id === currentUserId);
+}
+
+export const createCardElement = ({card, cardTemplate, onClickDelete, onClickLike, onClickImage, isOwnCard, addLike, deleteLike, currentUserId}) => {
     const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true); // создаем карточку из шаблона
     const deleteButton = cardElement.querySelector('.card__delete-button'); // кнопка удаления карточки
     const cardImage = cardElement.querySelector('.card__image'); // изображение на карточке
@@ -12,11 +16,14 @@ export const createCardElement = ({card, cardTemplate, onClickDelete, onClickLik
     cardImage.src = card.link;
     cardImage.alt = card.name;
     likeCount.textContent = card.likes.length;
+    if (isLiked(card, currentUserId)) {
+        likeButton.classList.add('card__like-button_is-active');
+    }
 
     cardImage.addEventListener('click', onClickImage);
-    likeButton.addEventListener('click', onClickLike);
+    likeButton.addEventListener('click', (evt) => onClickLike(evt, card._id, addLike, deleteLike));
     if (isOwnCard) {
-        deleteButton.addEventListener('click', () => onClickDelete(cardElement));
+        deleteButton.addEventListener('click', () => onClickDelete(cardElement, card._id));
     } else {
         deleteButton.classList.add('card__delete-button_hidden');
     }
@@ -30,6 +37,11 @@ export const deleteCardElement = cardElement => {
 }
 
 // функция для добавления обработчика лайка
-export const onClickLike = evt => {
+export const onClickLike = (evt, cardId, addLike, deleteLike) => {
     evt.target.classList.toggle('card__like-button_is-active');
+    if (evt.target.classList.contains('card__like-button_is-active')) {
+        addLike(cardId);
+    } else {
+        deleteLike(cardId);
+    }
 }
