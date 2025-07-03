@@ -21,7 +21,7 @@ export const createCardElement = ({card, cardTemplate, onClickDelete, onClickLik
     }
 
     cardImage.addEventListener('click', onClickImage);
-    likeButton.addEventListener('click', (evt) => onClickLike(evt, card._id, addLike, deleteLike));
+    likeButton.addEventListener('click', (evt) => onClickLike(evt, card._id));
     if (isOwnCard) {
         deleteButton.addEventListener('click', () => onClickDelete(cardElement, card._id));
     } else {
@@ -34,14 +34,4 @@ export const createCardElement = ({card, cardTemplate, onClickDelete, onClickLik
 // удаление карточки
 export const deleteCardElement = cardElement => {
     cardElement.remove();
-}
-
-// функция для добавления обработчика лайка
-export const onClickLike = (evt, cardId, addLike, deleteLike) => {
-    evt.target.classList.toggle('card__like-button_is-active');
-    if (evt.target.classList.contains('card__like-button_is-active')) {
-        addLike(cardId);
-    } else {
-        deleteLike(cardId);
-    }
 }
