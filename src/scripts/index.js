@@ -2,7 +2,7 @@ import '../pages/index.css';
 import { createCardElement, deleteCardElement, onClickLike } from './card.js';
 import { openModal, closeModal } from './modal.js';
 import { enableValidation, clearValidation } from './validation.js';
-import { getInitialCards, getUserInfo, updateUserInfo, addCard } from './api.js';
+import { getInitialCards, getUserInfo, updateUserInfo, addCard, deleteCard } from './api.js';
 
 const cardsList = document.querySelector('.places__list'); // место для карточек
 const cardTemplate = document.querySelector('#card-template').content; // шаблон карточки
@@ -24,7 +24,10 @@ const jobInput = formEditProfile.elements['description']; // инпут опис
 const formNewCard = document.forms['new-place']; // форма для добавления карточки
 const placeName = formNewCard.elements['place-name']; // инпут места в этой форме
 const link = formNewCard.elements['link']; // инпут ссылки на фото в этой форме
+const formDeleteCard = document.forms['delete-confirm']; // форма для удаления карточки
 
+// переменная для хранения ссылки на карточку и её ID для удаления
+let cardToDelete = null;
 
 // функция для обработки клика по изображению в карточке
 const onClickImage = evt => {
@@ -34,17 +37,30 @@ const onClickImage = evt => {
     popupCaption.textContent = evt.target.alt;
 }
 
-const onClickDelete = cardElement => {
-    openModal(modalTypeDeleteCard);
-
-    // Вешаем обработчик только на время открытия попапа
-    const confirmDeleteButton = modalTypeDeleteCard.querySelector('.popup__button');
-    const onConfirm = () => {
-        deleteCardElement(cardElement);
-        closeModal(modalTypeDeleteCard);
-        confirmDeleteButton.removeEventListener('click', onConfirm);
+// обработка сабмита для формы удаления карточки
+const handleDeleteCardSubmit = evt => {
+    evt.preventDefault(); // отменяем стандартную отправку формы
+    
+    if (cardToDelete) {
+        // отправляем запрос на удаление карточки
+        deleteCard(cardToDelete.id)
+            .then(() => {
+                // если запрос успешен, удаляем карточку из DOM
+                deleteCardElement(cardToDelete.element);
+                cardToDelete = null; // очищаем ссылку
+            })
+            .catch(error => {
+                console.error('Ошибка при удалении карточки:', error);
+            });
     }
-    confirmDeleteButton.addEventListener('click', onConfirm);
+    
+    closeModal(evt.target.closest('.popup')); // закрываем форму
+}
+
+// функция для обработки клика по кнопке удаления карточки
+const onClickDelete = (cardElement, cardId) => {
+    cardToDelete = { element: cardElement, id: cardId }; // сохраняем карточку и её ID
+    openModal(modalTypeDeleteCard);
 }
 
 // загружаем данные пользователя и карточки одновременно
@@ -60,16 +76,16 @@ Promise.all([getUserInfo(), getInitialCards()])
             const cardElement = createCardElement({
                 card: card,
                 cardTemplate: cardTemplate,
-                onDelete: onClickDelete,
+                onClickDelete: (element) => onClickDelete(element, card._id), // передаем ID как параметр
                 onClickLike: onClickLike,
                 onClickImage: onClickImage,
                 isOwnCard: user._id === card.owner._id
             });
+            
             cardsList.append(cardElement);
         });
     })
     .catch(error => console.error(error)); // выводим ошибку в консоль
-
 
 // объект конфигурации для валидации форм
 const validationConfig = {
@@ -125,18 +141,20 @@ const handleNewCardSubmit = evt => {
             const newCardElement = createCardElement({
                 card: newCard,
                 cardTemplate: cardTemplate,
-                onDelete: onClickDelete,
+                onClickDelete: (element) => onClickDelete(element, newCard._id), // передаем ID как параметр
                 onClickLike: onClickLike,
-                onClickImage: onClickImage
+                onClickImage: onClickImage,
+                isOwnCard: true
             });
+            
             cardsList.prepend(newCardElement); // добавляем новую карточку
             evt.target.reset(); // очищаем инпуты
             closeModal(evt.target.closest('.popup')); // закрываем форму
         })
         .catch(error => console.error('Ошибка при добавлении карточки:', error));
-
 }
 
 // добавляем обработчики отправки форм
 formEditProfile.addEventListener('submit', handleEditProfileSubmit);
 formNewCard.addEventListener('submit', handleNewCardSubmit);
+formDeleteCard.addEventListener('submit', handleDeleteCardSubmit); // добавляем обработчик для формы удаления

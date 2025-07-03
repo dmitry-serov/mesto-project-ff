@@ -1,5 +1,5 @@
 // создание карточки
-export const createCardElement = ({card, cardTemplate, onDelete, onClickLike, onClickImage, isOwnCard}) => {
+export const createCardElement = ({card, cardTemplate, onClickDelete, onClickLike, onClickImage, isOwnCard}) => {
     const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true); // создаем карточку из шаблона
     const deleteButton = cardElement.querySelector('.card__delete-button'); // кнопка удаления карточки
     const cardImage = cardElement.querySelector('.card__image'); // изображение на карточке
@@ -12,16 +12,14 @@ export const createCardElement = ({card, cardTemplate, onDelete, onClickLike, on
     cardImage.src = card.link;
     cardImage.alt = card.name;
     likeCount.textContent = card.likes.length;
-    if (!isOwnCard) {
-        deleteButton.classList.add('card__delete-button_hidden');
-    }
 
-    // добавляем обработчики
-    if (isOwnCard) {
-        deleteButton.addEventListener('click', () => onDelete(cardElement));
-    }
     cardImage.addEventListener('click', onClickImage);
     likeButton.addEventListener('click', onClickLike);
+    if (isOwnCard) {
+        deleteButton.addEventListener('click', () => onClickDelete(cardElement));
+    } else {
+        deleteButton.classList.add('card__delete-button_hidden');
+    }
 
     return cardElement;
 }

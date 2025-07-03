@@ -66,3 +66,17 @@ export const addCard = (cardData) => {
         return Promise.reject(`Ошибка: ${res.status}`);
     });
 };
+
+// функция для удаления карточки
+export const deleteCard = (cardId) => {
+    return fetch(`${config.baseUrl}/cards/${cardId}`, {
+        method: 'DELETE',
+        headers: config.headers
+    })
+    .then(res => {
+        if (res.ok) {
+            return res.json();
+        }
+        return Promise.reject(`Ошибка: ${res.status}`);
+    });
+};
