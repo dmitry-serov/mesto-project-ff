@@ -50,10 +50,13 @@ const hasInvalidInput = (inputList) => {
 // функция для переключения состояния кнопки submit
 const toggleButtonState = (inputList, buttonElement, config) => {
   if (hasInvalidInput(inputList)) {
-    // если есть невалидный инпут
-    buttonElement.classList.add(config.inactiveButtonClass); // выключаем кнопку
+    // если есть невалидный инпут выключаем кнопку
+    buttonElement.classList.add(config.inactiveButtonClass);
+    buttonElement.disabled = true;
   } else {
-    buttonElement.classList.remove(config.inactiveButtonClass); // иначе включаем
+    // иначе включаем
+    buttonElement.classList.remove(config.inactiveButtonClass);
+    buttonElement.disabled = false;
   }
 };
 
