@@ -13,7 +13,7 @@
   -moz-border-radius: 50%;
   border-radius: 50%;
   background-size: cover;
-  background-position: center;  
+  background-position: center;
 }
 
 .profile__image-overlay {
@@ -24,7 +24,9 @@
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: background 0.3s, opacity 0.3s;
+  transition:
+    background 0.3s,
+    opacity 0.3s;
   pointer-events: none;
 }
 

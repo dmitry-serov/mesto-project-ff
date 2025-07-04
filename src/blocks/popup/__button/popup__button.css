@@ -10,7 +10,9 @@
   background: #000;
   border-radius: 2px;
   border: none;
-  transition: visibility 0s, background 0.3s;
+  transition:
+    visibility 0s,
+    background 0.3s;
   margin-top: 48px;
 }
 
@@ -20,9 +22,9 @@
 }
 
 .popup__button_inactive {
-  color: #CCCCCC;
+  color: #cccccc;
   background: none;
-  border: 1px solid #CCCCCC;
+  border: 1px solid #cccccc;
   pointer-events: none;
 }
 

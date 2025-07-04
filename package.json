@@ -7,7 +7,13 @@
     "build": "webpack --mode production",
     "dev": "webpack serve",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "check": "prettier --check './**/*.{html,css,js}'",
+    "format": "prettier --write './**/*.{html,css,js}'",
+    "lint": "stylelint '**/*.css'",
+    "lintfix": "stylelint '**/*.css' --fix",
+    "checkAll": "npm run check && npm run lint",
+    "fixAll": "npm run format && npm run lintfix"
   },
   "keywords": [],
   "author": "",
@@ -29,6 +35,8 @@
     "webpack-dev-server": "^5.2.2"
   },
   "dependencies": {
-    "core-js": "^3.43.0"
+    "core-js": "^3.43.0",
+    "prettier": "^3.6.2",
+    "stylelint": "^16.21.1"
   }
 }
