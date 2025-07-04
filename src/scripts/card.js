@@ -10,8 +10,6 @@ export const createCardElement = ({
   onClickLike,
   onClickImage,
   isOwnCard,
-  addLike,
-  deleteLike,
   currentUserId,
 }) => {
   const cardElement = cardTemplate

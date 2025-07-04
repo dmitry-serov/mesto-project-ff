@@ -1,5 +1,3 @@
-// validation.js
-
 // функция для отображения текста ошибки валидации инпута
 const showInputError = (formElement, inputElement, errorMessage, config) => {
   const errorElement = formElement.querySelector(

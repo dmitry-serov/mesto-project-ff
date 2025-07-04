@@ -19,9 +19,7 @@ const profileAddButton = document.querySelector('.profile__add-button'); // кн
 const profileTitle = document.querySelector('.profile__title'); // имя в профиле
 const profileDescription = document.querySelector('.profile__description'); // описание в профиле
 const profileImage = document.querySelector('.profile__image'); // фото в профиле
-const profileImageContainer = document.querySelector(
-  '.profile__image-container'
-); // контейнер с фото в профиле
+const profileImageContainer = document.querySelector('.profile__image-container'); // контейнер с фото в профиле
 const profileEditButton = document.querySelector('.profile__edit-button'); // кнопка для редактирования профиля
 const modalTypeNewCard = document.querySelector('.popup_type_new-card'); // попап для добавления карточки
 const modalTypeEditProfile = document.querySelector('.popup_type_edit'); // попап для редактирования профиля
@@ -29,9 +27,7 @@ const modalTypeDeleteCard = document.querySelector('.popup_type_delete-card'); /
 const modalTypeImage = document.querySelector('.popup_type_image'); // попап с фото из карточки
 const popupImage = modalTypeImage.querySelector('.popup__image'); // изображение в попапе с фото
 const popupCaption = modalTypeImage.querySelector('.popup__caption'); // подпись в попапе с фото
-const modalTypeChangeAvatar = document.querySelector(
-  '.popup_type_change-avatar'
-); // попап для изменения аватара
+const modalTypeChangeAvatar = document.querySelector('.popup_type_change-avatar'); // попап для изменения аватара
 
 const formEditProfile = document.forms['edit-profile']; // форма для редактирования профиля
 const nameInput = formEditProfile.elements['name']; // инпут имени в этой форме
@@ -187,6 +183,8 @@ const handleEditProfileSubmit = (evt) => {
     })
     .catch((error) => {
       console.error(error);
+    })
+    .finally(() => {
       setButtonLoadingState(submitButton, false, originalText);
     });
 };
@@ -208,6 +206,8 @@ const handleChangeAvatarSubmit = (evt) => {
     })
     .catch((error) => {
       console.error(error);
+    })
+    .finally(() => {
       setButtonLoadingState(submitButton, false, originalText);
     });
 };
@@ -246,6 +246,8 @@ const handleNewCardSubmit = (evt) => {
     })
     .catch((error) => {
       console.error('Ошибка при добавлении карточки:', error);
+    })
+    .finally(() => {
       setButtonLoadingState(submitButton, false, originalText);
     });
 };
@@ -253,5 +255,5 @@ const handleNewCardSubmit = (evt) => {
 // добавляем обработчики отправки форм
 formEditProfile.addEventListener('submit', handleEditProfileSubmit);
 formNewCard.addEventListener('submit', handleNewCardSubmit);
-formDeleteCard.addEventListener('submit', handleDeleteCardSubmit); // добавляем обработчик для формы удаления
-formChangeAvatar.addEventListener('submit', handleChangeAvatarSubmit); // добавляем обработчик для формы изменения аватара
+formDeleteCard.addEventListener('submit', handleDeleteCardSubmit);
+formChangeAvatar.addEventListener('submit', handleChangeAvatarSubmit);
