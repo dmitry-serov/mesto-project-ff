@@ -72,13 +72,12 @@ const handleDeleteCardSubmit = (evt) => {
         // если успех, удаляем карточку из DOM
         deleteCardElement(cardToDelete.element);
         cardToDelete = null;
+        closeModal(evt.target.closest('.popup')); // закрываем форму
       })
       .catch((error) => {
         console.error('Ошибка при удалении карточки:', error);
       });
   }
-
-  closeModal(evt.target.closest('.popup')); // закрываем форму
 };
 
 // функция для обработки клика по кнопке удаления карточки
