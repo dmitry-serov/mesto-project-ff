@@ -2,7 +2,7 @@ import '../pages/index.css';
 import { createCardElement, deleteCardElement } from './card.js';
 import { openModal, closeModal } from './modal.js';
 import { enableValidation, clearValidation } from './validation.js';
-import { getInitialCards, getUserInfo, updateUserInfo, addCard, deleteCard, addLike, deleteLike } from './api.js';
+import { getInitialCards, getUserInfo, updateUserInfo, updateUserAvatar, addCard, deleteCard, addLike, deleteLike } from './api.js';
 
 const cardsList = document.querySelector('.places__list'); // место для карточек
 const cardTemplate = document.querySelector('#card-template').content; // шаблон карточки
@@ -10,6 +10,7 @@ const profileAddButton = document.querySelector('.profile__add-button'); // кн
 const profileTitle = document.querySelector('.profile__title'); // имя в профиле
 const profileDescription = document.querySelector('.profile__description'); // описание в профиле
 const profileImage = document.querySelector('.profile__image'); // фото в профиле
+const profileImageContainer = document.querySelector('.profile__image-container'); // контейнер с фото в профиле
 const profileEditButton = document.querySelector('.profile__edit-button'); // кнопка для редактирования профиля
 const modalTypeNewCard = document.querySelector('.popup_type_new-card'); // попап для добавления карточки
 const modalTypeEditProfile = document.querySelector('.popup_type_edit'); // попап для редактирования профиля
@@ -17,6 +18,7 @@ const modalTypeDeleteCard = document.querySelector('.popup_type_delete-card'); /
 const modalTypeImage = document.querySelector('.popup_type_image'); // попап с фото из карточки
 const popupImage = modalTypeImage.querySelector('.popup__image'); // изображение в попапе с фото
 const popupCaption = modalTypeImage.querySelector('.popup__caption'); // подпись в попапе с фото
+const modalTypeChangeAvatar = document.querySelector('.popup_type_change-avatar'); // попап для изменения аватара
 
 const formEditProfile = document.forms['edit-profile']; // форма для редактирования профиля
 const nameInput = formEditProfile.elements['name']; // инпут имени в этой форме
@@ -25,10 +27,22 @@ const formNewCard = document.forms['new-place']; // форма для добав
 const placeName = formNewCard.elements['place-name']; // инпут места в этой форме
 const link = formNewCard.elements['link']; // инпут ссылки на фото в этой форме
 const formDeleteCard = document.forms['delete-confirm']; // форма для удаления карточки
-
+const formChangeAvatar = document.forms['new-avatar']; // форма для изменения аватара
+const avatarLinkInput = formChangeAvatar.elements['link']; // инпут ссылки на аватар в этой форме
 
 let cardToDelete = null; // для хранения карточки и ее id
 let currentUserId = null; // для хранения id пользователя
+
+// функция для управления состоянием кнопки во время загрузки
+const setButtonLoadingState = (button, isLoading, originalText) => {
+    if (isLoading) {
+        button.textContent = 'Сохранение...';
+        button.disabled = true;
+    } else {
+        button.textContent = originalText;
+        button.disabled = false;
+    }
+};
 
 // функция для обработки клика по изображению в карточке
 const onClickImage = evt => {
@@ -136,23 +150,63 @@ profileEditButton.addEventListener('click', () => {
     jobInput.value = profileDescription.textContent;
 });
 
+profileImageContainer.addEventListener('click', () => {
+    openModal(modalTypeChangeAvatar);
+    clearValidation(modalTypeChangeAvatar, validationConfig);
+});
+
 // обработка сабмита для формы редактирования профиля
 const handleEditProfileSubmit = evt => {
     evt.preventDefault(); // отменяем стандартную отправку формы
+    
+    const submitButton = evt.target.querySelector('.popup__button');
+    const originalText = submitButton.textContent;
+    
+    setButtonLoadingState(submitButton, true, originalText);
 
     updateUserInfo(nameInput.value, jobInput.value)
         .then(user => {
             profileTitle.textContent = user.name;
             profileDescription.textContent = user.about;
+            closeModal(evt.target.closest('.popup')); // закрываем форму
         })
-        .catch(error => console.error(error));
-
-    closeModal(evt.target.closest('.popup')); // закрываем форму
+        .catch(error => {
+            console.error(error);
+            setButtonLoadingState(submitButton, false, originalText);
+        });
 }
+
+// обработка сабмита для формы изменения аватара
+const handleChangeAvatarSubmit = evt => {
+    evt.preventDefault(); // отменяем стандартную отправку формы
+    
+    const submitButton = evt.target.querySelector('.popup__button');
+    const originalText = submitButton.textContent;
+    
+    setButtonLoadingState(submitButton, true, originalText);
+
+    updateUserAvatar(avatarLinkInput.value)
+        .then(user => {
+            profileImage.style.backgroundImage = `url('${user.avatar}')`;
+            evt.target.reset(); // очищаем инпуты
+            closeModal(evt.target.closest('.popup')); // закрываем форму
+        })
+        .catch(error => {
+            console.error(error);
+            setButtonLoadingState(submitButton, false, originalText);
+        });
+}
+
 
 // обработка сабмита для формы новой карточки
 const handleNewCardSubmit = evt => {
     evt.preventDefault(); // отменяем стандартную отправку формы
+    
+    const submitButton = evt.target.querySelector('.popup__button');
+    const originalText = submitButton.textContent;
+    
+    setButtonLoadingState(submitButton, true, originalText);
+    
     // cоздаем объект со значениями инпутов
     const newCardData = {
         name: placeName.value,
@@ -176,10 +230,14 @@ const handleNewCardSubmit = evt => {
             evt.target.reset(); // очищаем инпуты
             closeModal(evt.target.closest('.popup')); // закрываем форму
         })
-        .catch(error => console.error('Ошибка при добавлении карточки:', error));
+        .catch(error => {
+            console.error('Ошибка при добавлении карточки:', error);
+            setButtonLoadingState(submitButton, false, originalText);
+        });
 }
 
 // добавляем обработчики отправки форм
 formEditProfile.addEventListener('submit', handleEditProfileSubmit);
 formNewCard.addEventListener('submit', handleNewCardSubmit);
 formDeleteCard.addEventListener('submit', handleDeleteCardSubmit); // добавляем обработчик для формы удаления
+formChangeAvatar.addEventListener('submit', handleChangeAvatarSubmit); // добавляем обработчик для формы изменения аватара
