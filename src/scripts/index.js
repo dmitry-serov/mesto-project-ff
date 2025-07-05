@@ -72,7 +72,7 @@ const handleDeleteCardSubmit = (evt) => {
         // если успех, удаляем карточку из DOM
         deleteCardElement(cardToDelete.element);
         cardToDelete = null;
-        closeModal(evt.target.closest('.popup')); // закрываем форму
+        closeModal(modalTypeDeleteCard); // закрываем форму
       })
       .catch((error) => {
         console.error('Ошибка при удалении карточки:', error);
@@ -168,7 +168,7 @@ profileImageContainer.addEventListener('click', () => {
 // обработка сабмита для формы редактирования профиля
 const handleEditProfileSubmit = (evt) => {
   evt.preventDefault(); // отменяем стандартную отправку формы
-
+  // ищем кнопку сабмита, так как она разная в зависимости от попапа
   const submitButton = evt.target.querySelector('.popup__button');
   const originalText = submitButton.textContent;
 
@@ -178,7 +178,7 @@ const handleEditProfileSubmit = (evt) => {
     .then((user) => {
       profileTitle.textContent = user.name;
       profileDescription.textContent = user.about;
-      closeModal(evt.target.closest('.popup')); // закрываем форму
+      closeModal(modalTypeEditProfile); // закрываем форму
     })
     .catch((error) => {
       console.error(error);
@@ -191,7 +191,7 @@ const handleEditProfileSubmit = (evt) => {
 // обработка сабмита для формы изменения аватара
 const handleChangeAvatarSubmit = (evt) => {
   evt.preventDefault(); // отменяем стандартную отправку формы
-
+  // ищем кнопку сабмита, так как она разная в зависимости от попапа
   const submitButton = evt.target.querySelector('.popup__button');
   const originalText = submitButton.textContent;
 
@@ -201,7 +201,7 @@ const handleChangeAvatarSubmit = (evt) => {
     .then((user) => {
       profileImage.style.backgroundImage = `url('${user.avatar}')`;
       evt.target.reset(); // очищаем инпуты
-      closeModal(evt.target.closest('.popup')); // закрываем форму
+      closeModal(modalTypeChangeAvatar); // закрываем форму
     })
     .catch((error) => {
       console.error(error);
@@ -214,7 +214,7 @@ const handleChangeAvatarSubmit = (evt) => {
 // обработка сабмита для формы новой карточки
 const handleNewCardSubmit = (evt) => {
   evt.preventDefault(); // отменяем стандартную отправку формы
-
+  // ищем кнопку сабмита, так как она разная в зависимости от попапа
   const submitButton = evt.target.querySelector('.popup__button');
   const originalText = submitButton.textContent;
 
@@ -241,7 +241,7 @@ const handleNewCardSubmit = (evt) => {
 
       cardsList.prepend(newCardElement); // добавляем новую карточку
       evt.target.reset(); // очищаем инпуты
-      closeModal(evt.target.closest('.popup')); // закрываем форму
+      closeModal(modalTypeNewCard); // закрываем форму
     })
     .catch((error) => {
       console.error('Ошибка при добавлении карточки:', error);
