@@ -153,11 +153,11 @@ profileAddButton.addEventListener('click', () => {
   clearValidation(modalTypeNewCard, validationConfig);
 });
 profileEditButton.addEventListener('click', () => {
-  openModal(modalTypeEditProfile); // открываем окно
-  clearValidation(modalTypeEditProfile, validationConfig);
   // заполняем поля формы
   nameInput.value = profileTitle.textContent;
   jobInput.value = profileDescription.textContent;
+  openModal(modalTypeEditProfile); // открываем окно
+  clearValidation(modalTypeEditProfile, validationConfig);
 });
 
 profileImageContainer.addEventListener('click', () => {

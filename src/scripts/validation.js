@@ -20,6 +20,8 @@ const hideInputError = (formElement, inputElement, config) => {
 
 // функция для проверки валидности инпута
 const checkInputValidity = (formElement, inputElement, config) => {
+  // очищаем любые предыдущие кастомные ошибки
+  inputElement.setCustomValidity('');
   if (inputElement.validity.patternMismatch) {
     // проверяем кастомная ошибка или стандартная
     inputElement.setCustomValidity(inputElement.dataset.errorMessage); // если да берем кастомное сообщение
@@ -62,10 +64,12 @@ const toggleButtonState = (inputList, buttonElement, config) => {
 
 // функция для добавления обработчика ошибок на все инпуты формы
 const setEventListeners = (formElement, config) => {
+  // получаем все инпуты формы
   const inputList = Array.from(
     formElement.querySelectorAll(config.inputSelector)
-  ); // получаем все инпуты формы
-  const buttonElement = formElement.querySelector(config.submitButtonSelector); // получаем кнопку submit
+  );
+  // получаем кнопку submit
+  const buttonElement = formElement.querySelector(config.submitButtonSelector);
   inputList.forEach((inputElement) => {
     inputElement.addEventListener('input', () => {
       // на каждый инпут вешаем обработчик
@@ -87,11 +91,13 @@ export const clearValidation = (formElement, config) => {
     formElement.querySelectorAll(config.inputSelector)
   );
   const buttonElement = formElement.querySelector(config.submitButtonSelector);
+  
   // Очищаем ошибки для всех инпутов
   inputList.forEach((inputElement) => {
     inputElement.setCustomValidity("");
     hideInputError(formElement, inputElement, config);
   });
-  buttonElement.classList.add(config.inactiveButtonClass);
-  buttonElement.disabled = true;
+  
+  // проверяем состояние кнопки
+  toggleButtonState(inputList, buttonElement, config);
 };
