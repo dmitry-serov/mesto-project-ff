@@ -1,13 +1,33 @@
+import { addLike, deleteLike } from './api.js';
+
 // создание карточки
 const isLiked = (card, currentUserId) => {
   return card.likes.some((like) => like._id === currentUserId);
+};
+
+// обработчик лайка/дизлайка карточки
+export const handleLikeClick = (cardId, likeButton, likeCount) => {
+  if (likeButton.classList.contains('card__like-button_is-active')) {
+    deleteLike(cardId)
+      .then((res) => {
+        likeButton.classList.remove('card__like-button_is-active');
+        likeCount.textContent = res.likes.length;
+      })
+      .catch(console.error);
+  } else {
+    addLike(cardId)
+      .then((res) => {
+        likeButton.classList.add('card__like-button_is-active');
+        likeCount.textContent = res.likes.length;
+      })
+      .catch(console.error);
+  }
 };
 
 export const createCardElement = ({
   card,
   cardTemplate,
   onClickDelete,
-  onClickLike,
   onClickImage,
   isOwnCard,
   currentUserId,
@@ -26,12 +46,16 @@ export const createCardElement = ({
   cardImage.src = card.link;
   cardImage.alt = card.name;
   likeCount.textContent = card.likes.length;
+
   if (isLiked(card, currentUserId)) {
     likeButton.classList.add('card__like-button_is-active');
   }
 
   cardImage.addEventListener('click', onClickImage);
-  likeButton.addEventListener('click', (evt) => onClickLike(evt, card._id));
+  likeButton.addEventListener('click', () =>
+    handleLikeClick(card._id, likeButton, likeCount)
+  );
+
   if (isOwnCard) {
     deleteButton.addEventListener('click', () =>
       onClickDelete(cardElement, card._id)

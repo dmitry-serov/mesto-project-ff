@@ -91,13 +91,13 @@ export const clearValidation = (formElement, config) => {
     formElement.querySelectorAll(config.inputSelector)
   );
   const buttonElement = formElement.querySelector(config.submitButtonSelector);
-  
+
   // Очищаем ошибки для всех инпутов
   inputList.forEach((inputElement) => {
-    inputElement.setCustomValidity("");
+    inputElement.setCustomValidity('');
     hideInputError(formElement, inputElement, config);
   });
-  
+
   // проверяем состояние кнопки
   toggleButtonState(inputList, buttonElement, config);
 };

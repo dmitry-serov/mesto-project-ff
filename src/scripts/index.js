@@ -9,8 +9,6 @@ import {
   updateUserAvatar,
   addCard,
   deleteCard,
-  addLike,
-  deleteLike,
 } from './api.js';
 
 const cardsList = document.querySelector('.places__list'); // место для карточек
@@ -19,7 +17,9 @@ const profileAddButton = document.querySelector('.profile__add-button'); // кн
 const profileTitle = document.querySelector('.profile__title'); // имя в профиле
 const profileDescription = document.querySelector('.profile__description'); // описание в профиле
 const profileImage = document.querySelector('.profile__image'); // фото в профиле
-const profileImageContainer = document.querySelector('.profile__image-container'); // контейнер с фото в профиле
+const profileImageContainer = document.querySelector(
+  '.profile__image-container'
+); // контейнер с фото в профиле
 const profileEditButton = document.querySelector('.profile__edit-button'); // кнопка для редактирования профиля
 const modalTypeNewCard = document.querySelector('.popup_type_new-card'); // попап для добавления карточки
 const modalTypeEditProfile = document.querySelector('.popup_type_edit'); // попап для редактирования профиля
@@ -27,7 +27,9 @@ const modalTypeDeleteCard = document.querySelector('.popup_type_delete-card'); /
 const modalTypeImage = document.querySelector('.popup_type_image'); // попап с фото из карточки
 const popupImage = modalTypeImage.querySelector('.popup__image'); // изображение в попапе с фото
 const popupCaption = modalTypeImage.querySelector('.popup__caption'); // подпись в попапе с фото
-const modalTypeChangeAvatar = document.querySelector('.popup_type_change-avatar'); // попап для изменения аватара
+const modalTypeChangeAvatar = document.querySelector(
+  '.popup_type_change-avatar'
+); // попап для изменения аватара
 
 const formEditProfile = document.forms['edit-profile']; // форма для редактирования профиля
 const nameInput = formEditProfile.elements['name']; // инпут имени в этой форме
@@ -86,29 +88,6 @@ const onClickDelete = (cardElement, cardId) => {
   openModal(modalTypeDeleteCard);
 };
 
-// обработчик лайка
-const handleLikeClick = (evt, cardId) => {
-  const likeButton = evt.target;
-  const likeCount = evt.target
-    .closest('.card__like-section')
-    .querySelector('.card__like-count');
-  if (likeButton.classList.contains('card__like-button_is-active')) {
-    deleteLike(cardId)
-      .then((res) => {
-        likeButton.classList.remove('card__like-button_is-active');
-        likeCount.textContent = res.likes.length;
-      })
-      .catch(console.error);
-  } else {
-    addLike(cardId)
-      .then((res) => {
-        likeButton.classList.add('card__like-button_is-active');
-        likeCount.textContent = res.likes.length;
-      })
-      .catch(console.error);
-  }
-};
-
 // загружаем данные пользователя и карточки одновременно
 Promise.all([getUserInfo(), getInitialCards()])
   .then(([user, cards]) => {
@@ -124,7 +103,6 @@ Promise.all([getUserInfo(), getInitialCards()])
         card: card,
         cardTemplate: cardTemplate,
         onClickDelete: (element, id) => onClickDelete(element, id),
-        onClickLike: handleLikeClick,
         onClickImage: onClickImage,
         isOwnCard: user._id === card.owner._id,
         currentUserId: currentUserId, // передаем id пользователя
@@ -233,7 +211,6 @@ const handleNewCardSubmit = (evt) => {
         card: newCard,
         cardTemplate: cardTemplate,
         onClickDelete: (element, id) => onClickDelete(element, id),
-        onClickLike: handleLikeClick,
         onClickImage: onClickImage,
         isOwnCard: true,
         currentUserId: currentUserId, // передаем id пользователя
