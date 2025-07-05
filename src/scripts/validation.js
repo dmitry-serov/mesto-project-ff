@@ -89,7 +89,9 @@ export const clearValidation = (formElement, config) => {
   const buttonElement = formElement.querySelector(config.submitButtonSelector);
   // Очищаем ошибки для всех инпутов
   inputList.forEach((inputElement) => {
+    inputElement.setCustomValidity("");
     hideInputError(formElement, inputElement, config);
   });
   buttonElement.classList.add(config.inactiveButtonClass);
+  buttonElement.disabled = true;
 };
